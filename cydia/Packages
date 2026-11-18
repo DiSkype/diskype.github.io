@@ -1,0 +1,16 @@
+Package: com.diskype.tweak
+Name: DiSkype
+Description: Discord inside the legacy Skype 5.7 UI. Logs into Discord with email and password and renders your servers, channels and messages using Skype's native interface.
+Maintainer: DiSkype Project
+Author: DiSkype Project
+Section: Tweaks
+Depends: mobilesubstrate
+Architecture: iphoneos-arm
+Version: 26.0+1
+Installed-Size: 340
+Filename: pool/com.diskype.tweak_26.0+1_iphoneos-arm.deb
+Size: 95294
+MD5sum: 6706ea14e5a08c1136ae8014727b3f62
+SHA256: dc6255547b1d78fc3c379c1e7a307a85d1b146911ff3613bcb94bd76fabc72b2
+Icon: https://diskype.github.io/cydia/icon.png
+

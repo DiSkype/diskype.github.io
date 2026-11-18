@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DiSkype</title>
+<meta name="description" content="DiSkype retrofits Discord and Telegram into legacy Skype 5.7 on iOS 8.0 to 10.3.">
+<meta name="theme-color" content="#5865F2">
+<meta property="og:title" content="DiSkype">
+<meta property="og:description" content="Your Discord account, living inside Skype 5.7.">
+<meta property="og:image" content="public/screenshots/IMG_0040.PNG">
+<style>
+  :root{
+    --accent:#5865F2;
+    --accent-dark:#4752C4;
+    --accent-darker:#3C45A8;
+    --ink:#1E1F26;
+    --gray:#6A6D78;
+    --line:#DFE1E5;
+    --tile-light:#F2F2F2;
+    --tile-dark:#2B2D31;
+    --footer:#17181C;
+    --font:"Segoe UI","Segoe UI Web (West European)",-apple-system,"Helvetica Neue",Arial,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;border-radius:0;}
+  html{scroll-behavior:smooth;}
+  body{font-family:var(--font);color:var(--ink);background:#fff;line-height:1.5;-webkit-font-smoothing:antialiased;}
+  img{display:block;max-width:100%;}
+  a{color:inherit;text-decoration:none;}
+
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:10px;
+    border:0;cursor:pointer;
+    background:var(--accent-dark);
+    color:#fff;
+    font-family:var(--font);font-size:15px;font-weight:600;letter-spacing:.02em;
+    padding:18px 44px;
+    border-radius:999px;
+    transition:background .12s linear, transform .12s linear;
+  }
+  .btn:hover{background:var(--accent-darker);}
+  .btn:active{transform:translateY(2px);}
+  .btn svg{width:18px;height:18px;fill:currentColor;flex:none;}
+
+  .wrap{width:min(1080px,92vw);margin:0 auto;}
+
+  header{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--line);}
+  .bar{display:flex;align-items:center;justify-content:space-between;height:64px;width:min(1080px,92vw);margin:0 auto;}
+  .bar img{height:30px;width:auto;}
+  nav{display:flex;gap:32px;}
+  nav a{font-size:14px;font-weight:600;color:var(--gray);padding:6px 0;border-bottom:3px solid transparent;transition:color .1s linear,border-color .1s linear;}
+  nav a:hover{color:var(--accent);border-bottom-color:var(--accent);}
+
+  .hero{background:var(--accent);color:#fff;text-align:center;padding:96px 0 104px;}
+  .hero img{height:88px;width:auto;margin:0 auto 30px;}
+  .hero h1{font-size:clamp(38px,6vw,68px);font-weight:200;line-height:1.06;}
+  .hero h1 b{font-weight:700;}
+  .hero p{max-width:600px;margin:26px auto 44px;font-size:19px;font-weight:300;color:rgba(255,255,255,.88);}
+  .hero .cta{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;}
+  .hero .btn{background:var(--accent-dark);border:2px solid rgba(255,255,255,.28);}
+  .hero .btn:hover{background:var(--accent-darker);}
+
+  section.block{padding:88px 0;}
+
+  .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+  .tile{padding:26px 24px;min-height:180px;display:flex;flex-direction:column;justify-content:space-between;background:var(--tile-light);color:var(--ink);}
+  .tile.dark{background:var(--tile-dark);color:#fff;}
+  .tile.accent{background:var(--accent);color:#fff;}
+  .tile svg{width:34px;height:34px;fill:none;stroke:currentColor;stroke-width:2;}
+  .tile.accent svg,.tile.dark svg{stroke:#fff;}
+  .tile h3{font-size:16px;font-weight:700;margin-top:18px;}
+  .tile p{font-size:14px;color:var(--gray);margin-top:8px;}
+  .tile.accent p,.tile.dark p{color:rgba(255,255,255,.82);}
+
+  .screens{background:var(--tile-light);}
+  .carousel{width:min(720px,94vw);margin:0 auto;}
+  .stage{position:relative;width:min(320px,74vw);margin:0 auto;aspect-ratio:640/1136;perspective:1500px;}
+  .slide{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;
+    background:#fff;border:1px solid var(--line);
+    opacity:0;transform:rotateY(90deg);backface-visibility:hidden;
+    transition:transform .55s cubic-bezier(.55,0,.35,1),opacity .55s cubic-bezier(.55,0,.35,1);}
+  .commandbar{display:flex;align-items:center;justify-content:space-between;gap:16px;
+    background:var(--accent);height:72px;padding:0 18px;margin-top:14px;}
+  .arrow{width:46px;height:46px;border-radius:999px;background:var(--accent-dark);color:#fff;
+    display:inline-flex;align-items:center;justify-content:center;cursor:pointer;border:0;
+    transition:background .12s linear,transform .12s linear;}
+  .arrow:hover{background:var(--accent-darker);}
+  .arrow:active{transform:translateY(2px);}
+  .arrow svg{width:16px;height:16px;fill:#fff;}
+  .dots{display:flex;gap:10px;}
+  .dot{width:12px;height:12px;background:rgba(255,255,255,.38);cursor:pointer;transition:background .1s linear;}
+  .dot.on{background:#fff;}
+  .counter{font-size:13px;font-weight:700;color:rgba(255,255,255,.9);min-width:52px;text-align:right;}
+
+  .install{background:var(--accent);color:#fff;text-align:center;}
+  .repo{display:inline-block;background:var(--accent-dark);color:#fff;font-family:"Consolas","Menlo",monospace;
+    font-size:15px;padding:14px 26px;margin:0 0 34px;border:2px solid rgba(255,255,255,.25);}
+  .install .cta{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;}
+  .install .btn{border:2px solid rgba(255,255,255,.28);}
+
+  footer{background:var(--footer);color:rgba(255,255,255,.72);padding:56px 0;}
+  .foot{display:flex;align-items:center;justify-content:space-between;gap:28px;flex-wrap:wrap;}
+  .foot img{height:34px;width:auto;}
+  .foot .meta{font-size:13px;text-align:right;}
+
+  @media (max-width:900px){
+    .tiles{grid-template-columns:repeat(2,1fr);}
+    nav{gap:20px;}
+  }
+  @media (max-width:560px){
+    nav a{font-size:13px;}
+    .bar img{height:24px;}
+    .tiles{grid-template-columns:1fr;}
+    section.block{padding:64px 0;}
+    .hero{padding:72px 0 80px;}
+    .foot{flex-direction:column;align-items:flex-start;}
+    .foot .meta{text-align:left;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="bar">
+    <a href="#top"><img src="public/wordmark-lightmode.png" alt="DiSkype"></a>
+    <nav>
+      <a href="#features">features</a>
+      <a href="#screens">screenshots</a>
+      <a href="#install">install</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <img src="public/wordmark-darkmode.png" alt="DiSkype">
+      <h1>Discord,<br><b>inside Skype 5.7</b></h1>
+      <p>Sign in with your email and password, then use Discord through Skype's own screens.</p>
+      <div class="cta">
+        <a class="btn" href="#install">get diskype</a>
+        <a class="btn" href="#screens">view screenshots</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="features">
+    <div class="wrap">
+      <div class="tiles">
+
+        <div class="tile accent">
+          <svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-4 9-9 10C7 21 3 17 3 12V6z"/><path d="M8 12l3 3 5-6"/></svg>
+          <div>
+            <h3>Safe Login</h3>
+            <p>Email and password sign in with spoofed Safari headers, so your Discord account never gets banned.</p>
+          </div>
+        </div>
+
+        <div class="tile dark">
+          <svg viewBox="0 0 24 24"><path d="M2 3h20v14H8l-6 5z"/></svg>
+          <div>
+            <h3>Multiprotocol</h3>
+            <p>Telegram and Discord in one client</p>
+          </div>
+        </div>
+
+        <div class="tile">
+          <svg viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20"/><path d="M10 18.5h4"/></svg>
+          <div>
+            <h3>Supports iOS 8.0-10.3</h3>
+            <p>One build for iOS 8, 9 and 10</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="block screens" id="screens">
+    <div class="wrap">
+      <div class="carousel" id="carousel">
+        <div class="stage" id="stage">
+          <img class="slide" src="public/screenshots/IMG_0040.PNG" alt="DiSkype chat screen" style="opacity:1;transform:rotateY(0deg);z-index:2;">
+          <img class="slide" src="public/screenshots/IMG_0041.PNG" alt="DiSkype conversation list">
+          <img class="slide" src="public/screenshots/IMG_0042.PNG" alt="DiSkype direct messages">
+        </div>
+        <div class="commandbar">
+          <button class="arrow" id="prev" aria-label="previous screenshot">
+            <svg viewBox="0 0 24 24"><path d="M15.5 3.5L7 12l8.5 8.5 1.8-1.8L10.6 12l6.7-6.7z"/></svg>
+          </button>
+          <div class="dots" id="dots"></div>
+          <button class="arrow" id="next" aria-label="next screenshot">
+            <svg viewBox="0 0 24 24"><path d="M8.5 3.5L6.7 5.3 13.4 12l-6.7 6.7 1.8 1.8L17 12z"/></svg>
+          </button>
+          <div class="counter" id="counter">1 / 3</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block install" id="install">
+    <div class="wrap">
+      <div class="repo">https://diskype.github.io/cydia</div>
+      <div class="cta">
+        <a class="btn" href="cydia://url/https://cydia.saurik.com/api/share#?source=https://diskype.github.io/cydia">
+          add to Cydia
+        </a>
+        <a class="btn" href="zbra://sources/add/https://diskype.github.io/cydia">
+          add to Zebra
+        </a>
+        <button class="btn" id="copyBtn" type="button">Copy repo url</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <img src="public/wordmark-darkmode.png" alt="DiSkype">
+    <div class="meta">Not affiliated with Discord Inc. or Microsoft Corporation.</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var dotsBox = document.getElementById('dots');
+  var counter = document.getElementById('counter');
+  var carousel = document.getElementById('carousel');
+  var cur = 0, busy = false, timer = null;
+  var DUR = 560, AUTO = 5000;
+
+  slides.forEach(function(_, i){
+    var d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' on' : '');
+    d.setAttribute('role', 'button');
+    d.setAttribute('tabindex', '0');
+    d.setAttribute('aria-label', 'screenshot ' + (i + 1));
+    d.addEventListener('click', function(){ go(i, i > cur ? 1 : -1); });
+    d.addEventListener('keydown', function(e){
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(i, i > cur ? 1 : -1); }
+    });
+    dotsBox.appendChild(d);
+  });
+  var dots = Array.prototype.slice.call(dotsBox.children);
+
+  function go(n, dir){
+    if (busy || n === cur || n < 0 || n >= slides.length) return;
+    busy = true;
+    var out = slides[cur], inn = slides[n];
+
+    inn.style.transition = 'none';
+    inn.style.transform = 'rotateY(' + (dir < 0 ? -90 : 90) + 'deg)';
+    inn.style.opacity = '1';
+    inn.style.zIndex = '3';
+    void inn.offsetWidth;
+    inn.style.transition = '';
+
+    out.style.transform = 'rotateY(' + (dir < 0 ? 90 : -90) + 'deg)';
+    out.style.opacity = '0';
+    out.style.zIndex = '1';
+    inn.style.transform = 'rotateY(0deg)';
+    inn.style.zIndex = '2';
+
+    cur = n;
+    dots.forEach(function(d, i){ d.classList.toggle('on', i === cur); });
+    counter.textContent = (cur + 1) + ' / ' + slides.length;
+
+    setTimeout(function(){ busy = false; }, DUR);
+    restart();
+  }
+
+  function restart(){
+    clearInterval(timer);
+    timer = setInterval(function(){ go((cur + 1) % slides.length, 1); }, AUTO);
+  }
+
+  document.getElementById('next').addEventListener('click', function(){ go((cur + 1) % slides.length, 1); });
+  document.getElementById('prev').addEventListener('click', function(){ go((cur - 1 + slides.length) % slides.length, -1); });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'ArrowRight') go((cur + 1) % slides.length, 1);
+    if (e.key === 'ArrowLeft') go((cur - 1 + slides.length) % slides.length, -1);
+  });
+  carousel.addEventListener('mouseenter', function(){ clearInterval(timer); });
+  carousel.addEventListener('mouseleave', restart);
+  restart();
+
+  document.getElementById('copyBtn').addEventListener('click', function(){
+    var btn = this, url = 'https://diskype.github.io/cydia';
+    function done(){
+      btn.textContent = 'copied';
+      setTimeout(function(){ btn.textContent = 'copy repo url'; }, 1600);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(done, fallback);
+    } else { fallback(); }
+    function fallback(){
+      var ta = document.createElement('textarea');
+      ta.value = url; document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); done(); } catch (e) {}
+      document.body.removeChild(ta);
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

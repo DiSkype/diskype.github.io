@@ -1,0 +1,8 @@
+Origin: DiSkype
+Label: DiSkype
+Suite: stable
+Version: 26.0
+Codename: diskype
+Architectures: iphoneos-arm
+Components: main
+Description: DiSkype
